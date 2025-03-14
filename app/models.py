@@ -1,24 +1,28 @@
-from sqlalchemy import create_engine, Column, Integer, String, Float, ForeignKey
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, relatioship
+from sqlalchemy import Column, Integer, String, Float, ForeignKey
+from sqlalchemy.orm import declarative_base, relationship, sessionmaker
+from sqlalchemy import create_engine
 
+DATABASE_URL = "postgresql://user:password@db:5432/books"
+engine = create_engine(DATABASE_URL, echo=True)
 Base = declarative_base()
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-class Genre(Base):
-    __tablename__ = 'genres'
+class Genre(Base):  # Пример класса Genre
+    __tablename__ = "genres"
     id = Column(Integer, primary_key=True)
-    name = Column(String)
+    name = Column(String, unique=True, nullable=False)
+    books = relationship("Book", back_populates="genre")
 
-class Book(Base):
-    __tablename__ = 'books'
+class Book(Base):  # Определение класса Book
+    __tablename__ = "books"
     id = Column(Integer, primary_key=True)
-    title = Column(String)
-    price = Column(String)
-    rating = Column(String)
-    genre_id = Column(Integer, ForeignKey('genres.id'))
-    genre = relationship("Genre", back_populates="books")
-    
-engine = create_engine('sqlite:///data/books.db')
-Base.metadata.create_all(engine)
-Session = sessionmaker(bind=engine)
-session = Session()
+    title = Column(String, nullable=False)
+    price = Column(Float)
+    rating = Column(Integer)
+    genre_id = Column(Integer, ForeignKey("genres.id"))
+    genre = relationship("Genre", back_populates="books"
+
+engine = create_engine(DATABASE_URL, echo=True)
+Base = declarative_base()
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+session = SessionLocal()
